@@ -15,58 +15,56 @@ struct UserDetailView: View {
             VStack(spacing: 16) {
                 
                 // Profile Card
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Text(user.name)
-                            .font(.title)
-                            .fontWeight(.bold)
+                card(background: .ultraThinMaterial) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text(user.name)
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            Spacer()
+                            
+                            Text(user.isActive ? "Active" : "Inactive")
+                                .font(.caption)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(user.isActive ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
+                                .foregroundColor(user.isActive ? .green : .red)
+                                .clipShape(Capsule())
+                        }
                         
-                        Spacer()
+                        Text(user.company)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                         
-                        Text(user.isActive ? "Active" : "Inactive")
-                            .font(.caption)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background(user.isActive ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                            .foregroundColor(user.isActive ? .green : .red)
-                            .clipShape(Capsule())
+                        Text("\(user.age) years old")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    
-                    Text(user.company)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    Text("\(user.age) years old")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 // About Section
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("About")
-                        .font(.headline)
-                    Text(user.about)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                card {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("About")
+                            .font(.headline)
+                        Text(user.about)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
                 }
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 // Contact Section
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Contact")
-                        .font(.headline)
-                    Label(user.email, systemImage: "envelope")
-                    Label(user.address, systemImage: "house")
-                    Label("Registered: \(user.registered.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
+                card {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Contact")
+                            .font(.headline)
+                        Label(user.email, systemImage: "envelope")
+                        Label(user.address, systemImage: "house")
+                        Label("Registered: \(user.registered.formatted(date: .abbreviated, time: .omitted))",
+                              systemImage: "calendar")
+                    }
                 }
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 // Friends Navigation
                 NavigationLink {
@@ -87,8 +85,18 @@ struct UserDetailView: View {
         .navigationTitle(user.name)
         .navigationBarTitleDisplayMode(.inline)
     }
+    
+    private func card<S: ShapeStyle, Content: View>(
+        background: S = Color(.secondarySystemBackground),
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        content()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(background)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+    }
 }
-
 #Preview {
     let fakeUser = User(
         id: "1",
